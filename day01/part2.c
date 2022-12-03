@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 
 	// Read file line by line, exit when EOF (or some other problem)
 	ssize_t charsRead;
-	char* line;
+	char* line = NULL;
 	size_t n;
 
 	int topCals[TOP_COUNT] = {0};
