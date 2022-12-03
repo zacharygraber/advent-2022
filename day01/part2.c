@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 				// if current Elf's cals are larger than `i`th cal count
 				if (currCals > topCals[i]) {
 					// Shift everything down and put currCals at index i
-					for (int j = TOP_COUNT - 2; j > i; j--) {
+					for (int j = TOP_COUNT - 2; j >= i; j--) {
 						// This is destructive, but it doesn't matter since 
 						//  (a) we don't care about the last value since it's cast away anyway and
 						//  (b) we're going in reverse order
@@ -52,11 +52,13 @@ int main(int argc, char* argv[]) {
 		else {
 			if ((calsOnLine = atoi(line)) == 0) {
 				fprintf(stderr, "Either something went terribly wrong reading a line or the input file is malformed.\n");
+				fclose(fp);
 				exit(1);
 			}
 			currCals += calsOnLine;
 		}
 	}
+	fclose(fp);
 	printf("Highest cal counts are:\n");
 	int sum = 0;
 	for (int i = 0; i < TOP_COUNT; i++) {
@@ -64,6 +66,5 @@ int main(int argc, char* argv[]) {
 		sum += topCals[i];
 	}
 	printf("Sum of top %d cal counts is %d\n", TOP_COUNT, sum);
-
 	exit(0);
 }

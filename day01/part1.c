@@ -40,11 +40,13 @@ int main(int argc, char* argv[]) {
 		else {
 			if ((calsOnLine = atoi(line)) == 0) {
 				fprintf(stderr, "Either something went terribly wrong reading a line or the input file is malformed.\n");
+				fclose(fp);
 				exit(1);
 			}
 			currCals += calsOnLine;
 		}
 	}
+	fclose(fp);
 	printf("Highest cal count: %d\n", highestCals);
 
 	exit(0);
