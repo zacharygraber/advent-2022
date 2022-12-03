@@ -45,6 +45,7 @@ int main(int argc, char* argv[]) {
 						topCals[j+1] = topCals[j];
 					}
 					topCals[i] = currCals;
+					break;
 				}
 			}
 			currCals = 0;
