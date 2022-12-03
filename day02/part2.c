@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#define DEBUG 0
 
 typedef enum {
 	ROCK,
@@ -45,7 +46,8 @@ int main(int argc, char* argv[]) {
 
 	int totalScore = 0;
 	int roundScore;
-	rps_choice_t oppChoice;
+	rps_choice_t oppChoice, myChoice;
+	rps_outcome_t idealOutcome;
 	while ((charsRead = getline(&line, &n, fp)) != -1) {
 		// We expect line to be "_ _\n", or 4 chars total, including newline [or carriage return... blah blah blah]
 		if (charsRead != 4) {
@@ -62,7 +64,9 @@ int main(int argc, char* argv[]) {
 		}
 		else {
 			oppChoice = decodeOppChoice(line[0]);
-			roundScore = scoreRound(oppChoice, chooseForOutcome(oppChoice, decodeIdealOutcome(line[2])));
+			idealOutcome = decodeIdealOutcome(line[2]);
+			myChoice = chooseForOutcome(oppChoice, idealOutcome);
+			roundScore = scoreRound(myChoice, oppChoice);
 			if (roundScore == -1) {
 				fprintf(stderr, "Something went wrong while scoring a round\n");
 				fclose(fp);
@@ -80,12 +84,15 @@ int main(int argc, char* argv[]) {
 rps_choice_t decodeOppChoice(char oppChoice) {
 	switch (oppChoice) {
 		case 'A':
+			if (DEBUG) printf("OPPONENT: ROCK, ");
 			return(ROCK);
 			break;
 		case 'B':
+			if (DEBUG) printf("OPPONENT: PAPER, ");
 			return(PAPER);
 			break;
 		case 'C':
+			if (DEBUG) printf("OPPONENT: SCISSORS, ");
 			return(SCISSORS);
 			break;
 		default:
@@ -99,12 +106,15 @@ rps_choice_t decodeOppChoice(char oppChoice) {
 rps_outcome_t decodeIdealOutcome(char outcome) {
 	switch (outcome) {
 		case 'X':
+			if (DEBUG) printf("TRYING TO LOSE, ");
 			return(LOSE);
 			break;
 		case 'Y':
+			if (DEBUG) printf("TRYING TO DRAW, ");
 			return(DRAW);
 			break;
 		case 'Z':
+			if (DEBUG) printf("TRYING TO WIN, ");
 			return(WIN);
 			break;
 		default:
@@ -117,18 +127,22 @@ rps_outcome_t decodeIdealOutcome(char outcome) {
 rps_choice_t chooseForOutcome(rps_choice_t oppChoice, rps_outcome_t outcome) {
 	if (outcome == DRAW) {
 		// Choose same as opponent to draw
+		if (DEBUG) printf("CHOSE OPPCHOICE\n");
 		return oppChoice;
 	}
 	else {
 		// Choose the correct output to win/lose
 		switch (oppChoice) {
 			case ROCK:
+				if (DEBUG) printf(outcome == WIN ? "CHOSE PAPER\n" : "CHOSE SCISSORS\n");
 				return outcome == WIN ? PAPER : SCISSORS;
 				break;
 			case PAPER:
+				if (DEBUG) printf(outcome == WIN ? "CHOSE SCISSORS\n" : "CHOSE ROCK\n");
 				return outcome == WIN ? SCISSORS : ROCK;
 				break;
 			case SCISSORS:
+				if (DEBUG) printf(outcome == WIN ? "CHOSE ROCK\n" : "CHOSE PAPER\n");
 				return outcome == WIN ? ROCK : PAPER;
 				break;
 		}
